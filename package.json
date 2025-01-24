@@ -1,0 +1,31 @@
+{
+  "name": "gamerscape",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "typeorm": "tsx node_modules/typeorm/cli.js",
+    "migration:generate": "tsx node_modules/typeorm/cli.js migration:generate -d src/database/config/dataSource.ts src/database/migrations/migration",
+    "migration:run": "tsx node_modules/typeorm/cli.js migration:run -d src/database/config/dataSource.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.6",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@types/swagger-ui-express": "^4.1.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.1",
+    "reflect-metadata": "^0.2.2",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1",
+    "typeorm": "^0.3.20"
+  }
+}
