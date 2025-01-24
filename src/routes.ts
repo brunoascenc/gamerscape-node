@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { controllerMethodBinder } from "./middlewares/controllerMethodBinder";
 import { CreateCompletedController, DeleteCompletedController, GettAllCompletedController } from "./controllers/completedController";
-import { CreateWaitListController, GetAllWaitListController } from "./controllers/waitListController";
+import { CreateWaitListController, DeleteWaitListController, GetAllWaitListController } from "./controllers/waitListController";
 import { CreateBackLogController, GetAllBacklogController } from "./controllers/backlogController";
 
 const routes = Router();
@@ -13,5 +13,6 @@ routes.get("/completed", controllerMethodBinder(GettAllCompletedController));
 routes.get("/waitlist", controllerMethodBinder(GetAllWaitListController));
 routes.get("/backlog", controllerMethodBinder(GetAllBacklogController));
 routes.delete("/completed/:id", controllerMethodBinder(DeleteCompletedController));
+routes.delete("/waitlist/:id", controllerMethodBinder(DeleteWaitListController));
 
 export { routes };

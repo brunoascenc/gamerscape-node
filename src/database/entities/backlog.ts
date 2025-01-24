@@ -7,7 +7,7 @@ import {
 @Entity("backlog")
 export class Backlog {
   @PrimaryGeneratedColumn("uuid")
-  id: number;
+  id: string;
 
   @Column({ type: "text" })
   title: string;

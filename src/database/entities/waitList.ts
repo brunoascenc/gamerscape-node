@@ -3,7 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from "typeorm";
 @Entity("waitList")
 export class WaitList {
   @PrimaryGeneratedColumn("uuid")
-  id: number;
+  id: string;
 
   @Column({ type: "text" })
   title: string;

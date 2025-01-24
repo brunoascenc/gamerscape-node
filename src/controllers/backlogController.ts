@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateBackLogService, GetAllBacklogService } from "../services/backlogService";
+import { CreateBackLogService, DeleteBacklogService, GetAllBacklogService } from "../services/backlogService";
 
 export class CreateBackLogController {
   async handle(request: Request, response: Response) {
@@ -27,5 +27,19 @@ export class GetAllBacklogController {
     const backlog = await service.execute();
 
     return response.json(backlog);
+  }
+}
+
+export class DeleteBacklogController{
+  async handle(request: Request, response: Response) {
+    const service = new DeleteBacklogService();
+ 
+    const result = await service.execute(request.params.id);
+
+    if (result instanceof Error) {
+      return response.status(400).json(result.message);
+    }
+
+    return response.status(204).end();
   }
 }

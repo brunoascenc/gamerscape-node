@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateWaitListService, GetAllWaitListService } from "../services/waitListService";
+import { CreateWaitListService, DeleteWaitListService, GetAllWaitListService } from "../services/waitListService";
 
 export class CreateWaitListController {
   async handle(request: Request, response: Response) {
@@ -26,5 +26,19 @@ export class GetAllWaitListController{
     const waitList = await service.execute();
 
     return response.json(waitList);
+  }
+}
+
+export class DeleteWaitListController{
+  async handle(request: Request, response: Response) {
+    const service = new DeleteWaitListService();
+ 
+    const result = await service.execute(request.params.id);
+
+    if (result instanceof Error) {
+      return response.status(400).json(result.message);
+    }
+
+    return response.status(204).end();
   }
 }
