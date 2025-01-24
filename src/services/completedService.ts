@@ -49,7 +49,7 @@ export class GetAllCompletedService {
 export class DeleteCompletedService {
   async execute(id: string) {
     const repo = AppDataSource.getRepository(Completed);
-    console.log(id)
+
     const completed = await repo.findOne({
       where: {
         id: id,
@@ -59,7 +59,25 @@ export class DeleteCompletedService {
       return new Error("O jogo não foi encontrado");
     }
     
-    console.log(id)
+
     await repo.delete(id);
+  }
+}
+
+export class GetCompletedByIdService {
+  async execute(id: string) {
+    const repo = AppDataSource.getRepository(Completed);
+
+    const completed = await repo.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!completed) {
+      return new Error("O jogo não foi encontrado");
+    }
+    
+    return completed
   }
 }

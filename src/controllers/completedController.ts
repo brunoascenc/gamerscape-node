@@ -1,5 +1,5 @@
 import { Request, response, Response } from "express";
-import { CreateGamesService, DeleteCompletedService, GetAllCompletedService } from "../services/completedService";
+import { CreateGamesService, DeleteCompletedService, GetAllCompletedService, GetCompletedByIdService } from "../services/completedService";
 
 export class CreateCompletedController {
    async handle(request: Request, response: Response) {
@@ -49,5 +49,19 @@ export class DeleteCompletedController{
     }
 
     return response.status(204).end();
+  }
+}
+
+export class GetCompletedByIdController {
+  async handle(request: Request, response: Response) {
+    const service = new GetCompletedByIdService();
+
+    const result = await service.execute(request.params.id);
+
+    if (result instanceof Error) {
+      return response.status(400).json(result.message);
+    } 
+
+    return response.json(result);
   }
 }

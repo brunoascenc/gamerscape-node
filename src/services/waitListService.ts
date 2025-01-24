@@ -57,3 +57,21 @@ export class DeleteWaitListService {
     await repo.delete(id);
   }
 }
+
+export class GetWaitListByIdService {
+  async execute(id: string) {
+    const repo = AppDataSource.getRepository(WaitList);
+
+    const response = await repo.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!response) {
+      return new Error("O jogo não foi encontrado");
+    }
+    
+    return response
+  }
+}

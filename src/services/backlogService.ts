@@ -57,3 +57,21 @@ export class DeleteBacklogService {
     await repo.delete(id);
   }
 }
+
+export class GetBacklogByIdService {
+  async execute(id: string) {
+    const repo = AppDataSource.getRepository(Backlog);
+
+    const response = await repo.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!response) {
+      return new Error("O jogo não foi encontrado");
+    }
+    
+    return response
+  }
+}
