@@ -7,7 +7,7 @@ import {
 @Entity("completed")
 export class Completed {
   @PrimaryGeneratedColumn("uuid")
-  id: number;
+  id: string;
 
   @Column({ type: "text" })
   title: string;

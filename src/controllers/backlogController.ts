@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateBackLogService } from "../services/backlogService";
+import { CreateBackLogService, GetAllBacklogService } from "../services/backlogService";
 
 export class CreateBackLogController {
   async handle(request: Request, response: Response) {
@@ -16,5 +16,16 @@ export class CreateBackLogController {
     } catch (error) {
       response.status(400).json(error.message);
     }
+  }
+}
+
+
+export class GetAllBacklogController {
+  async handle(request: Request, response: Response) {
+    const service = new GetAllBacklogService();
+
+    const backlog = await service.execute();
+
+    return response.json(backlog);
   }
 }

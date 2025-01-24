@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { CreateGamesService } from "../services/completedService";
+import { Request, response, Response } from "express";
+import { CreateGamesService, DeleteCompletedService, GetAllCompletedService } from "../services/completedService";
 
 export class CreateCompletedController {
    async handle(request: Request, response: Response) {
@@ -25,5 +25,29 @@ export class CreateCompletedController {
     } catch (error) {
       response.status(400).json(error.message);
     }
+  }
+}
+
+export class GettAllCompletedController{
+  async handle(request: Request, response: Response) {
+    const service = new GetAllCompletedService();
+
+    const completed = await service.execute();
+
+    return response.json(completed);
+  }
+}
+
+export class DeleteCompletedController{
+  async handle(request: Request, response: Response) {
+    const service = new DeleteCompletedService();
+ 
+    const result = await service.execute(request.params.id);
+
+    if (result instanceof Error) {
+      return response.status(400).json(result.message);
+    }
+
+    return response.status(204).end();
   }
 }

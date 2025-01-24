@@ -29,3 +29,13 @@ export class CreateBackLogService {
     return game;
   }
 }
+
+export class GetAllBacklogService {
+  async execute() {
+    const repo = AppDataSource.getRepository(Backlog);
+
+    const backlog = await repo.find();
+
+    return backlog;
+  }
+}

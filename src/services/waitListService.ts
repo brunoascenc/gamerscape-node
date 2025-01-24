@@ -29,3 +29,13 @@ export class CreateWaitListService {
     return game;
   }
 }
+
+export class GetAllWaitListService {
+  async execute() {
+    const repo = AppDataSource.getRepository(WaitList);
+
+    const waitList = await repo.find();
+
+    return waitList;
+  }
+}

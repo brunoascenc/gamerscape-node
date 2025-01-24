@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateWaitListService } from "../services/waitListService";
+import { CreateWaitListService, GetAllWaitListService } from "../services/waitListService";
 
 export class CreateWaitListController {
   async handle(request: Request, response: Response) {
@@ -16,5 +16,15 @@ export class CreateWaitListController {
     } catch (error) {
       response.status(400).json(error.message);
     }
+  }
+}
+
+export class GetAllWaitListController{
+  async handle(request: Request, response: Response) {
+    const service = new GetAllWaitListService();
+
+    const waitList = await service.execute();
+
+    return response.json(waitList);
   }
 }
