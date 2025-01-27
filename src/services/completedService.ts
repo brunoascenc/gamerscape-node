@@ -1,5 +1,5 @@
 import AppDataSource from "../database/config/dataSource";
-import { CreateCompletedCommand } from "../data/commands/completed/completedCommand";
+import { CreateCompletedCommand, UpdateCompletedCommand } from "../data/commands/completed/completedCommand";
 import { Completed } from "../database/entities/completed";
 
 export class CreateGamesService {
@@ -79,5 +79,36 @@ export class GetCompletedByIdService {
     }
     
     return completed
+  }
+}
+
+export class UpdateCompletedService {
+  async execute({
+    id,
+    title,
+    psCompletionism,
+    steamCompletionism,
+    xboxCompletionism,
+  }: UpdateCompletedCommand): Promise<Completed | Error> {
+    const repo = AppDataSource.getRepository(Completed);
+
+    const game = await repo.findOne({
+      where: {
+        id: id,
+      },
+    })
+
+    if (!game) {
+      return new Error("O jogo não foi encontrado.");
+    }
+
+    game.title = title ? title : game.title
+    game.xboxCompletionism = title ? xboxCompletionism : game.xboxCompletionism
+    game.steamCompletionism = title ? steamCompletionism : game.steamCompletionism
+    game.psCompletionism = title ? psCompletionism : game.psCompletionism
+
+    await repo.save(game);
+
+    return game;
   }
 }

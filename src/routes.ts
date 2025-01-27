@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { controllerMethodBinder } from "./middlewares/controllerMethodBinder";
-import { CreateCompletedController, DeleteCompletedController, GetCompletedByIdController, GettAllCompletedController } from "./controllers/completedController";
+import { CreateCompletedController, DeleteCompletedController, GetCompletedByIdController, GettAllCompletedController, UpdateCompletedController } from "./controllers/completedController";
 import { CreateWaitListController, DeleteWaitListController, GetAllWaitListController, GetWaitListByIdController } from "./controllers/waitListController";
 import { CreateBackLogController, DeleteBacklogController, GetAllBacklogController, GetBacklogByIdController } from "./controllers/backlogController";
 
@@ -18,5 +18,6 @@ routes.delete("/backlog/:id", controllerMethodBinder(DeleteBacklogController));
 routes.get("/completed/:id", controllerMethodBinder(GetCompletedByIdController));
 routes.get("/waitlist/:id", controllerMethodBinder(GetWaitListByIdController));
 routes.get("/completed/:id", controllerMethodBinder(GetBacklogByIdController));
+routes.patch("/completed/:id", controllerMethodBinder(UpdateCompletedController));
 
 export { routes };

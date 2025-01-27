@@ -1,5 +1,5 @@
 import { Request, response, Response } from "express";
-import { CreateGamesService, DeleteCompletedService, GetAllCompletedService, GetCompletedByIdService } from "../services/completedService";
+import { CreateGamesService, DeleteCompletedService, GetAllCompletedService, GetCompletedByIdService, UpdateCompletedService } from "../services/completedService";
 
 export class CreateCompletedController {
    async handle(request: Request, response: Response) {
@@ -23,7 +23,7 @@ export class CreateCompletedController {
 
       return response.json(result);
     } catch (error) {
-      response.status(400).json(error.message);
+      return response.status(400).json(error.message);
     }
   }
 }
@@ -64,4 +64,32 @@ export class GetCompletedByIdController {
 
     return response.json(result);
   }
+}
+
+export class UpdateCompletedController {
+  async handle(request: Request, response: Response) {
+   try {
+     const service = new UpdateCompletedService();
+     const id = request.params.id;
+
+     const {
+       title,
+       psCompletionism,
+       steamCompletionism,
+       xboxCompletionism,
+     } = request.body;
+
+     const result = await service.execute({
+       id,
+       title,
+       psCompletionism,
+       steamCompletionism,
+       xboxCompletionism,
+     });
+
+     return response.json(result);
+   } catch (error) {
+     return response.status(error).json(error.message);
+   }
+ }
 }
