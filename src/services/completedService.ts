@@ -1,6 +1,6 @@
-import AppDataSource from "../database/config/dataSource";
 import { CreateCompletedCommand, UpdateCompletedCommand } from "../data/commands/completed/completedCommand";
 import { Completed } from "../database/entities/completed";
+import { CompletedRepository } from "../database/repositories/completedRepository";
 
 export class CreateGamesService {
   async execute({
@@ -10,19 +10,13 @@ export class CreateGamesService {
     steamCompletionism,
     xboxCompletionism,
   }: CreateCompletedCommand): Promise<Completed | Error> {
-    const repo = AppDataSource.getRepository(Completed);
+    const completed = await CompletedRepository.findItemByTitle(title);
 
-    if (
-      await repo.findOne({
-        where: {
-          title: title,
-        },
-      })
-    ) {
+    if (completed) {
       return new Error("O jogo já existe nessa lista");
     }
 
-    const game = repo.create({
+    const game = CompletedRepository.repo.create({
       title,
       externalId,
       psCompletionism,
@@ -30,7 +24,7 @@ export class CreateGamesService {
       xboxCompletionism,
     });
 
-    await repo.save(game);
+    await CompletedRepository.saveItem(game);
 
     return game;
   }
@@ -38,9 +32,7 @@ export class CreateGamesService {
 
 export class GetAllCompletedService {
   async execute() {
-    const repo = AppDataSource.getRepository(Completed);
-
-    const completed = await repo.find();
+    const completed = await CompletedRepository.getAllItems();
 
     return completed;
   }
@@ -48,31 +40,19 @@ export class GetAllCompletedService {
 
 export class DeleteCompletedService {
   async execute(id: string) {
-    const repo = AppDataSource.getRepository(Completed);
+    const completed = await CompletedRepository.findItemById(id);
 
-    const completed = await repo.findOne({
-      where: {
-        id: id,
-      },
-    });
     if (!completed) {
       return new Error("O jogo não foi encontrado");
     }
     
-
-    await repo.delete(id);
+    await CompletedRepository.deleteItem(id);
   }
 }
 
 export class GetCompletedByIdService {
   async execute(id: string) {
-    const repo = AppDataSource.getRepository(Completed);
-
-    const completed = await repo.findOne({
-      where: {
-        id: id,
-      },
-    });
+    const completed = await CompletedRepository.findItemById(id);
 
     if (!completed) {
       return new Error("O jogo não foi encontrado");
@@ -90,25 +70,19 @@ export class UpdateCompletedService {
     steamCompletionism,
     xboxCompletionism,
   }: UpdateCompletedCommand): Promise<Completed | Error> {
-    const repo = AppDataSource.getRepository(Completed);
+    const completed = await CompletedRepository.findItemById(id);
 
-    const game = await repo.findOne({
-      where: {
-        id: id,
-      },
-    })
-
-    if (!game) {
-      return new Error("O jogo não foi encontrado.");
+    if (!completed) {
+      return new Error("O jogo não foi encontrado");
     }
 
-    game.title = title ? title : game.title
-    game.xboxCompletionism = title ? xboxCompletionism : game.xboxCompletionism
-    game.steamCompletionism = title ? steamCompletionism : game.steamCompletionism
-    game.psCompletionism = title ? psCompletionism : game.psCompletionism
+    completed.title = title ? title : completed.title
+    completed.xboxCompletionism = title ? xboxCompletionism : completed.xboxCompletionism
+    completed.steamCompletionism = title ? steamCompletionism : completed.steamCompletionism
+    completed.psCompletionism = title ? psCompletionism : completed.psCompletionism
 
-    await repo.save(game);
+    await CompletedRepository.saveItem(completed);
 
-    return game;
+    return completed;
   }
 }
