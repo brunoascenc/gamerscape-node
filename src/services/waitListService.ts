@@ -1,30 +1,24 @@
-import AppDataSource from "../database/config/dataSource";
 import { CreateWaitListCommand } from "../data/commands/waitList/waitListCommand";
 import { WaitList } from "../database/entities/waitList";
+import { WaitListRepository } from "../database/repositories/waitListRepository";
 
 export class CreateWaitListService {
   async execute({
     title,
     externalId,
   }: CreateWaitListCommand): Promise<WaitList | Error> {
-    const repo = AppDataSource.getRepository(WaitList);
+    const item = WaitListRepository.findItemByTitle(title);
 
-    if (
-      await repo.findOne({
-        where: {
-          title: title,
-        },
-      })
-    ) {
+    if (item) {
       return new Error("O jogo já existe nessa lista");
     }
 
-    const game = repo.create({
+    const game = WaitListRepository.repo.create({
       title,
       externalId,
     });
 
-    await repo.save(game);
+    await WaitListRepository.repo.save(game);
 
     return game;
   }
@@ -32,46 +26,32 @@ export class CreateWaitListService {
 
 export class GetAllWaitListService {
   async execute() {
-    const repo = AppDataSource.getRepository(WaitList);
+    const items = WaitListRepository.getAllItems();
 
-    const waitList = await repo.find();
-
-    return waitList;
+    return items;
   }
 }
 
 export class DeleteWaitListService {
   async execute(id: string) {
-    const repo = AppDataSource.getRepository(WaitList);
+    const item = await WaitListRepository.findItemById(id);
 
-    const item = await repo.findOne({
-      where: {
-        id: id,
-      },
-    });
-  
     if (!item) {
       return new Error("O jogo não foi encontrado");
     }
 
-    await repo.delete(id);
+    await WaitListRepository.deleteItem(id);
   }
 }
 
 export class GetWaitListByIdService {
   async execute(id: string) {
-    const repo = AppDataSource.getRepository(WaitList);
+    const item = await WaitListRepository.findItemById(id);
 
-    const response = await repo.findOne({
-      where: {
-        id: id,
-      },
-    });
-
-    if (!response) {
+    if (!item) {
       return new Error("O jogo não foi encontrado");
     }
-    
-    return response
+
+    return item;
   }
 }
