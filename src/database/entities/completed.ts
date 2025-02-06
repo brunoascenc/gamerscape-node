@@ -1,8 +1,11 @@
 import {
   Column,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { User } from "./user";
 
 @Entity("completed")
 export class Completed {
@@ -24,6 +27,10 @@ export class Completed {
   @Column({ type: "bool" })
   xboxCompletionism: boolean;
 
-  @Column({type: "timestamp", default: () => "NOW()" })
+  @Column({ type: "timestamp", default: () => "NOW()" })
   createdAt: Date;
+
+  @ManyToOne((type) => User)
+  @JoinColumn()
+  user: User;
 }

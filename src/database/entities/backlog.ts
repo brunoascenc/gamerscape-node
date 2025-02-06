@@ -1,8 +1,11 @@
 import {
   Column,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { User } from "./user";
 
 @Entity("backlog")
 export class Backlog {
@@ -15,6 +18,10 @@ export class Backlog {
   @Column({ type: "text" })
   externalId: string;
 
-  @Column({type: "timestamp", default: () => "NOW()" })
+  @Column({ type: "timestamp", default: () => "NOW()" })
   createdAt: Date;
+
+  @ManyToOne((type) => User)
+  @JoinColumn()
+  user: User;
 }

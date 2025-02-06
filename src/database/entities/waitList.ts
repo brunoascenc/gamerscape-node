@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  Timestamp,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
+import { User } from "./user";
 
 @Entity("waitList")
 export class WaitList {
@@ -11,6 +19,10 @@ export class WaitList {
   @Column({ type: "text" })
   externalId: string;
 
-  @Column({type: "timestamp", default: () => "NOW()" })
+  @Column({ type: "timestamp", default: () => "NOW()" })
   createdAt: Date;
+
+  @ManyToOne((type) => User)
+  @JoinColumn()
+  user: User;
 }
