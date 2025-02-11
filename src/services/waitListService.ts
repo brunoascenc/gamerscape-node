@@ -7,7 +7,7 @@ export class CreateWaitListService {
     title,
     externalId,
   }: CreateWaitListCommand): Promise<WaitList | Error> {
-    const item = WaitListRepository.findItemByTitle(title);
+    const item = await WaitListRepository.findItemByTitle(title);
 
     if (item) {
       return new Error("O jogo já existe nessa lista");
@@ -26,7 +26,7 @@ export class CreateWaitListService {
 
 export class GetAllWaitListService {
   async execute() {
-    const items = WaitListRepository.getAllItems();
+    const items = await WaitListRepository.getAllItems();
 
     return items;
   }

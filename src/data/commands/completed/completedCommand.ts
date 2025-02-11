@@ -4,6 +4,7 @@ export type CreateCompletedCommand = {
   psCompletionism: boolean;
   steamCompletionism: boolean;
   xboxCompletionism: boolean;
+  userId: string;
 };
 
 export type UpdateCompletedCommand = {

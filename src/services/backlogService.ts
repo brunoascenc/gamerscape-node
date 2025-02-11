@@ -7,8 +7,9 @@ export class CreateBackLogService {
   async execute({
     title,
     externalId,
+    userId
   }: CreateBacklogCommand): Promise<Backlog | Error> {
-    const item = BacklogRepository.findItemByTitle(title);
+    const item = await BacklogRepository.findItemByTitle(title);
 
     if (item) {
       return new Error("O jogo já existe nessa lista");
@@ -27,7 +28,7 @@ export class CreateBackLogService {
 
 export class GetAllBacklogService {
   async execute() {
-    const items = BacklogRepository.getAllItems();
+    const items = await BacklogRepository.getAllItems();
 
     return items;
   }

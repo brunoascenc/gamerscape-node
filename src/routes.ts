@@ -3,6 +3,7 @@ import { controllerMethodBinder } from "./middlewares/controllerMethodBinder";
 import { CreateCompletedController, DeleteCompletedController, GetCompletedByIdController, GettAllCompletedController, UpdateCompletedController } from "./controllers/completedController";
 import { CreateWaitListController, DeleteWaitListController, GetAllWaitListController, GetWaitListByIdController } from "./controllers/waitListController";
 import { CreateBackLogController, DeleteBacklogController, GetAllBacklogController, GetBacklogByIdController } from "./controllers/backlogController";
+import { CreateUserController, GetAllUserController } from "./controllers/userController";
 
 const routes = Router();
 
@@ -19,5 +20,7 @@ routes.get("/completed/:id", controllerMethodBinder(GetCompletedByIdController))
 routes.get("/waitlist/:id", controllerMethodBinder(GetWaitListByIdController));
 routes.get("/completed/:id", controllerMethodBinder(GetBacklogByIdController));
 routes.patch("/completed/:id", controllerMethodBinder(UpdateCompletedController));
+routes.post("/user", controllerMethodBinder(CreateUserController));
+routes.get("/user", controllerMethodBinder(GetAllUserController));
 
 export { routes };

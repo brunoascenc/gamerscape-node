@@ -2,13 +2,14 @@ import { CreateCompletedCommand, UpdateCompletedCommand } from "../data/commands
 import { Completed } from "../database/entities/completed";
 import { CompletedRepository } from "../database/repositories/completedRepository";
 
-export class CreateGamesService {
+export class CreateCompletedService {
   async execute({
     title,
     externalId,
     psCompletionism,
     steamCompletionism,
     xboxCompletionism,
+    userId
   }: CreateCompletedCommand): Promise<Completed | Error> {
     const completed = await CompletedRepository.findItemByTitle(title);
 
@@ -22,6 +23,9 @@ export class CreateGamesService {
       psCompletionism,
       steamCompletionism,
       xboxCompletionism,
+      user: {
+        id: userId
+      }
     });
 
     await CompletedRepository.saveItem(game);
@@ -77,9 +81,9 @@ export class UpdateCompletedService {
     }
 
     completed.title = title ? title : completed.title
-    completed.xboxCompletionism = title ? xboxCompletionism : completed.xboxCompletionism
-    completed.steamCompletionism = title ? steamCompletionism : completed.steamCompletionism
-    completed.psCompletionism = title ? psCompletionism : completed.psCompletionism
+    completed.xboxCompletionism = xboxCompletionism ? xboxCompletionism : completed.xboxCompletionism
+    completed.steamCompletionism = steamCompletionism ? steamCompletionism : completed.steamCompletionism
+    completed.psCompletionism = psCompletionism ? psCompletionism : completed.psCompletionism
 
     await CompletedRepository.saveItem(completed);
 

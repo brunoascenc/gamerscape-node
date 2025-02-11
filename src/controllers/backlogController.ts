@@ -6,11 +6,12 @@ export class CreateBackLogController {
   async handle(request: Request, response: Response) {
     try {
       const service = new CreateBackLogService();
-      const { title, externalId } = request.body;
+      const { title, externalId, userId } = request.body;
 
       const result = await service.execute({
         title,
         externalId,
+        userId
       });
 
       return response.json(result);

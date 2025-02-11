@@ -1,16 +1,17 @@
 import { Request, response, Response } from "express";
-import { CreateGamesService, DeleteCompletedService, GetAllCompletedService, GetCompletedByIdService, UpdateCompletedService } from "../services/completedService";
+import { CreateCompletedService, DeleteCompletedService, GetAllCompletedService, GetCompletedByIdService, UpdateCompletedService } from "../services/completedService";
 
 export class CreateCompletedController {
    async handle(request: Request, response: Response) {
     try {
-      const service = new CreateGamesService();
+      const service = new CreateCompletedService();
       const {
         title,
         externalId,
         psCompletionism,
         steamCompletionism,
         xboxCompletionism,
+        userId
       } = request.body;
 
       const result = await service.execute({
@@ -19,6 +20,7 @@ export class CreateCompletedController {
         psCompletionism,
         steamCompletionism,
         xboxCompletionism,
+        userId
       });
 
       return response.json(result);
