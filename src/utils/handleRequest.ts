@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { sendSuccessResponse, sendErrorResponse } from "./responseHandler";
+import { errorCode } from "../data/responses/genericResponse";
 
-const statusNumber = {
+const statusCode = {
   PATCH: 200,
   PUT: 200,
   POST: 201,
@@ -16,8 +17,21 @@ export const handleRequest = async (
 ) => {
   try {
     const result = await serviceFunction(request.body);
-    return sendSuccessResponse(response, result, statusNumber[request.method]);
+    return sendSuccessResponse(response, result, statusCode[request.method]);
   } catch (error) {
+    if (error instanceof ServiceException) {
+      return sendErrorResponse(response, error.message, error.statusCode);
+    }
+
     return sendErrorResponse(response, error.message, 400);
   }
 };
+
+export class ServiceException extends Error {
+  statusCode: number;
+
+  constructor(message: string, statusCode: errorCode) {
+    super(message);
+    this.statusCode = statusCode;
+  }
+}

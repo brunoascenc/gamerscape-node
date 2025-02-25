@@ -4,3 +4,8 @@ export type CreateUserCommand = {
   username: string;
   password: string;
 };
+
+export type LoginUserCommand = {
+  email: string;
+  password: string;
+}

@@ -1,97 +1,66 @@
-import { Request, response, Response } from "express";
-import { CreateCompletedService, DeleteCompletedService, GetAllCompletedService, GetCompletedByIdService, UpdateCompletedService } from "../services/completedService";
+import { Request, Response } from "express";
+import {
+  CreateCompletedService,
+  DeleteCompletedService,
+  GetAllCompletedService,
+  GetCompletedByIdService,
+  UpdateCompletedService,
+} from "../services/completedService";
+import {
+  CreateCompletedCommand,
+  UpdateCompletedCommand,
+} from "../data/commands/completed/completedCommand";
+import { handleRequest } from "../utils/handleRequest";
 
 export class CreateCompletedController {
-   async handle(request: Request, response: Response) {
-    try {
-      const service = new CreateCompletedService();
-      const {
-        title,
-        externalId,
-        psCompletionism,
-        steamCompletionism,
-        xboxCompletionism,
-        userId
-      } = request.body;
-
-      const result = await service.execute({
-        title,
-        externalId,
-        psCompletionism,
-        steamCompletionism,
-        xboxCompletionism,
-        userId
-      });
-
-      return response.json(result);
-    } catch (error) {
-      return response.status(400).json(error.message);
-    }
+  async handle(request: Request, response: Response) {
+    return handleRequest(
+      request,
+      response,
+      async (body: CreateCompletedCommand) => {
+        const service = new CreateCompletedService();
+        return await service.execute(body);
+      }
+    );
   }
 }
 
-export class GettAllCompletedController{
+export class GettAllCompletedController {
   async handle(request: Request, response: Response) {
-    const service = new GetAllCompletedService();
-
-    const completed = await service.execute();
-
-    return response.json(completed);
+    return handleRequest(request, response, async () => {
+      const service = new GetAllCompletedService();
+      return await service.execute();
+    });
   }
 }
 
-export class DeleteCompletedController{
+export class DeleteCompletedController {
   async handle(request: Request, response: Response) {
-    const service = new DeleteCompletedService();
- 
-    const result = await service.execute(request.params.id);
-
-    if (result instanceof Error) {
-      return response.status(400).json(result.message);
-    }
-
-    return response.status(204).end();
+    return handleRequest(request, response, async () => {
+      const service = new DeleteCompletedService();
+      return await service.execute(request.params.id);
+    });
   }
 }
 
 export class GetCompletedByIdController {
   async handle(request: Request, response: Response) {
-    const service = new GetCompletedByIdService();
-
-    const result = await service.execute(request.params.id);
-
-    if (result instanceof Error) {
-      return response.status(400).json(result.message);
-    } 
-
-    return response.json(result);
+    return handleRequest(request, response, async () => {
+      const service = new GetCompletedByIdService();
+      return await service.execute(request.params.id);
+    });
   }
 }
 
 export class UpdateCompletedController {
   async handle(request: Request, response: Response) {
-   try {
-     const service = new UpdateCompletedService();
-     const id = request.params.id;
-
-     const {
-       title,
-       psCompletionism,
-       steamCompletionism,
-       xboxCompletionism,
-     } = request.body;
-
-     const result = await service.execute({
-       id,
-       title,
-       psCompletionism,
-       steamCompletionism,
-       xboxCompletionism,
-     });
-
-     return response.json(result);
-   } catch (error) {
-     return response.status(error).json(error.message);
-   }
- }
+    return handleRequest(
+      request,
+      response,
+      async (body: UpdateCompletedCommand) => {
+        const service = new UpdateCompletedService();
+        return await service.execute({ id: request.params.id, ...body });
+      }
+    );
+  }
 }

@@ -1,7 +1,8 @@
-import { CreateUserCommand } from "../data/commands/user/createUserCommand";
+import { CreateUserCommand, LoginUserCommand } from "../data/commands/user/createUserCommand";
 import { User } from "../database/entities/user";
 import { UserRepository } from "../database/repositories/userRepository";
 import bcrypt from "bcrypt";
+import { ServiceException } from "../utils/handleRequest";
 
 export class CreateUserService {
   async execute(command: CreateUserCommand): Promise<User | Error> {
@@ -31,5 +32,15 @@ export class GetAllUserService {
     const items = UserRepository.getAllItems();
 
     return items;
+  }
+}
+
+export class LoginUserService {
+  async execute(command: LoginUserCommand) {
+    const item = await UserRepository.findItemByUsername(command.email);
+
+    if (!item) { 
+      throw new ServiceException("E-mail não encontrado", 401);
+    }
   }
 }

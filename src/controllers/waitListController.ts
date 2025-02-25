@@ -1,59 +1,49 @@
 import { Request, Response } from "express";
-import { CreateWaitListService, DeleteWaitListService, GetAllWaitListService, GetWaitListByIdService } from "../services/waitListService";
+import { CreateWaitListCommand } from "../data/commands/waitList/waitListCommand";
+import { handleRequest } from "../utils/handleRequest";
+import {
+  CreateWaitListService,
+  DeleteWaitListService,
+  GetAllWaitListService,
+  GetWaitListByIdService,
+} from "../services/waitListService";
 
 export class CreateWaitListController {
   async handle(request: Request, response: Response) {
-    try {
-      const service = new CreateWaitListService();
-      const { title, externalId, userId } = request.body;
-
-      const result = await service.execute({
-        title,
-        externalId,
-        userId
-      });
-
-      return response.json(result);
-    } catch (error) {
-      response.status(400).json(error.message);
-    }
+    return handleRequest(
+      request,
+      response,
+      async (body: CreateWaitListCommand) => {
+        const service = new CreateWaitListService();
+        return await service.execute(body);
+      }
+    );
   }
 }
 
-export class GetAllWaitListController{
+export class GetAllWaitListController {
   async handle(request: Request, response: Response) {
-    const service = new GetAllWaitListService();
-
-    const waitList = await service.execute();
-
-    return response.json(waitList);
+    return handleRequest(request, response, async () => {
+      const service = new GetAllWaitListService();
+      return await service.execute();
+    });
   }
 }
 
-export class DeleteWaitListController{
+export class DeleteWaitListController {
   async handle(request: Request, response: Response) {
-    const service = new DeleteWaitListService();
- 
-    const result = await service.execute(request.params.id);
-
-    if (result instanceof Error) {
-      return response.status(400).json(result.message);
-    }
-
-    return response.status(204).end();
+    return handleRequest(request, response, async () => {
+      const service = new DeleteWaitListService();
+      return await service.execute(request.params.id);
+    });
   }
 }
 
 export class GetWaitListByIdController {
   async handle(request: Request, response: Response) {
-    const service = new GetWaitListByIdService();
-
-    const result = await service.execute(request.params.id);
-
-    if (result instanceof Error) {
-      return response.status(400).json(result.message);
-    } 
-
-    return response.json(result);
+    return handleRequest(request, response, async () => {
+      const service = new GetWaitListByIdService();
+      return await service.execute(request.params.id);
+    });
   }
 }
