@@ -11,9 +11,9 @@ export class CreateCompletedService {
     xboxCompletionism,
     userId
   }: CreateCompletedCommand): Promise<Completed | Error> {
-    const completed = await CompletedRepository.findItemByTitle(title);
+    const itemExists = await CompletedRepository.findItemByTitle(title);
 
-    if (completed) {
+    if (itemExists) {
       return new Error("O jogo já existe nessa lista");
     }
 

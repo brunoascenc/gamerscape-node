@@ -3,7 +3,8 @@ import { controllerMethodBinder } from "./middlewares/controllerMethodBinder";
 import { CreateCompletedController, DeleteCompletedController, GetCompletedByIdController, GettAllCompletedController, UpdateCompletedController } from "./controllers/completedController";
 import { CreateWaitListController, DeleteWaitListController, GetAllWaitListController, GetWaitListByIdController } from "./controllers/waitListController";
 import { CreateBackLogController, DeleteBacklogController, GetAllBacklogController, GetBacklogByIdController } from "./controllers/backlogController";
-import { CreateUserController, GetAllUserController, LoginUserController } from "./controllers/userController";
+import { CreateUserController, GetAllUserController, GetRefreshTokenController, LoginUserController } from "./controllers/authController";
+import { authenticateToken } from "./middlewares/authorization";
 
 const routes = Router();
 
@@ -20,8 +21,9 @@ routes.get("/completed/:id", controllerMethodBinder(GetCompletedByIdController))
 routes.get("/waitlist/:id", controllerMethodBinder(GetWaitListByIdController));
 routes.get("/completed/:id", controllerMethodBinder(GetBacklogByIdController));
 routes.patch("/completed/:id", controllerMethodBinder(UpdateCompletedController));
-routes.post("/user", controllerMethodBinder(CreateUserController));
-routes.get("/user", controllerMethodBinder(GetAllUserController));
-routes.post("/user/login", controllerMethodBinder(LoginUserController));
+routes.post("/auth/create-user", controllerMethodBinder(CreateUserController));
+routes.get("/user", authenticateToken, controllerMethodBinder(GetAllUserController));
+routes.post("/auth/login", controllerMethodBinder(LoginUserController));
+routes.get("/auth/refresh-token", controllerMethodBinder(GetRefreshTokenController));
 
 export { routes };

@@ -9,9 +9,9 @@ export class CreateBackLogService {
     externalId,
     userId
   }: CreateBacklogCommand): Promise<Backlog | Error> {
-    const item = await BacklogRepository.findItemByTitle(title);
+    const itemExists = await BacklogRepository.findItemByTitle(title);
 
-    if (item) {
+    if (itemExists) {
       return new Error("O jogo já existe nessa lista");
     }
 
@@ -36,9 +36,9 @@ export class GetAllBacklogService {
 
 export class DeleteBacklogService {
   async execute(id: string) {
-    const item = BacklogRepository.findItemById(id);
+    const itemExists = BacklogRepository.findItemById(id);
 
-    if (!item) {
+    if (!itemExists) {
       return new Error("O jogo não foi encontrado");
     }
 
@@ -48,12 +48,12 @@ export class DeleteBacklogService {
 
 export class GetBacklogByIdService {
   async execute(id: string) {
-    const item = BacklogRepository.findItemById(id);
+    const backlogItem = BacklogRepository.findItemById(id);
 
-    if (!item) {
+    if (!backlogItem) {
       return new Error("O jogo não foi encontrado");
     }
     
-    return item
+    return backlogItem
   }
 }

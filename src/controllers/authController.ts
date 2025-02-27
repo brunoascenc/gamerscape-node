@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CreateUserService, GetAllUserService, LoginUserService } from "../services/userService";
+import { CreateUserService, GetAllUserService, LoginUserService, RefreshTokenService } from "../services/authService";
 import { handleRequest } from "../utils/handleRequest";
 import { CreateUserCommand, LoginUserCommand } from "../data/commands/user/createUserCommand";
 
@@ -25,7 +25,16 @@ export class LoginUserController {
   async handle(request: Request, response: Response) {
     return handleRequest(request, response, async (body: LoginUserCommand) => {
       const service = new LoginUserService();
-      return await service.execute(body);
-    });
+      return await service.execute(body, response);
+    }, 200);
+  }
+}
+
+export class GetRefreshTokenController {
+  async handle(request: Request, response: Response) {
+    return handleRequest(request, response, async () => {
+      const service = new RefreshTokenService();
+      return await service.execute(request, response);
+    })
   }
 }

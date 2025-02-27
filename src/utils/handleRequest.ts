@@ -13,11 +13,17 @@ const statusCode = {
 export const handleRequest = async (
   request: Request,
   response: Response,
-  serviceFunction: Function
+  serviceFunction: Function,
+  successStatusCode?: number
 ) => {
   try {
     const result = await serviceFunction(request.body);
-    return sendSuccessResponse(response, result, statusCode[request.method]);
+    return sendSuccessResponse(
+      response,
+      result,
+      successStatusCode || statusCode[request.method]
+    );
+    
   } catch (error) {
     if (error instanceof ServiceException) {
       return sendErrorResponse(response, error.message, error.statusCode);

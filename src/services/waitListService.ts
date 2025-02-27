@@ -7,9 +7,9 @@ export class CreateWaitListService {
     title,
     externalId,
   }: CreateWaitListCommand): Promise<WaitList | Error> {
-    const item = await WaitListRepository.findItemByTitle(title);
+    const itemExists = await WaitListRepository.findItemByTitle(title);
 
-    if (item) {
+    if (itemExists) {
       return new Error("O jogo já existe nessa lista");
     }
 
@@ -26,17 +26,17 @@ export class CreateWaitListService {
 
 export class GetAllWaitListService {
   async execute() {
-    const items = await WaitListRepository.getAllItems();
+    const waitListItems = await WaitListRepository.getAllItems();
 
-    return items;
+    return waitListItems;
   }
 }
 
 export class DeleteWaitListService {
   async execute(id: string) {
-    const item = await WaitListRepository.findItemById(id);
+    const itemExists = await WaitListRepository.findItemById(id);
 
-    if (!item) {
+    if (!itemExists) {
       return new Error("O jogo não foi encontrado");
     }
 
@@ -46,12 +46,12 @@ export class DeleteWaitListService {
 
 export class GetWaitListByIdService {
   async execute(id: string) {
-    const item = await WaitListRepository.findItemById(id);
+    const waitListItem = await WaitListRepository.findItemById(id);
 
-    if (!item) {
+    if (!waitListItem) {
       return new Error("O jogo não foi encontrado");
     }
 
-    return item;
+    return waitListItem;
   }
 }
