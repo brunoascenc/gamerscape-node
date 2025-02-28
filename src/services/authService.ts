@@ -1,18 +1,21 @@
 import {
   CreateUserCommand,
   LoginUserCommand,
-} from "../data/commands/user/createUserCommand";
+} from "../data/commands/auth/authCommand";
 import { User } from "../database/entities/user";
 import { UserRepository } from "../database/repositories/userRepository";
 import bcrypt from "bcrypt";
 import { ServiceException } from "../utils/handleRequest";
 import { jwtTokens } from "../utils/jwtHelpers";
 import { Response, Request } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { VerifyErrors } from "jsonwebtoken";
+import { JwtUser } from "../data/commands/auth/authDto";
 
 export class CreateUserService {
   async execute(command: CreateUserCommand): Promise<User | Error> {
-    const userExists = await UserRepository.findItemByUsername(command.username);
+    const userExists = await UserRepository.findItemByUsername(
+      command.username
+    );
     const hashedPassword = await bcrypt.hash(command.password, 10);
 
     if (userExists) {
@@ -63,17 +66,20 @@ export class LoginUserService {
       email: user.email,
     });
 
-    
-    response.cookie("refreshToken", tokens.refreshToken, { httpOnly: true });
-  
+    response.cookie("refreshToken", tokens.refreshToken, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+    });
+
     return tokens;
   }
 }
 
 export class RefreshTokenService {
   async execute(request: Request, response: Response) {
-    console.log(request.cookies)
     const refreshToken = request.cookies.refreshToken;
+
     if (!refreshToken) {
       throw new ServiceException(
         "Você não possui um token de atualização",
@@ -81,22 +87,31 @@ export class RefreshTokenService {
       );
     }
 
-    jwt.verify(
+    return jwt.verify(
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET as string,
-      (
-        err: jwt.VerifyErrors | null,
-        user: jwt.JwtPayload | string | undefined
-      ) => {
+      (err: VerifyErrors | null, user: JwtUser | string | undefined) => {
         if (err) {
           throw new ServiceException("O seu token não é valido", 403);
         }
 
-        const tokens = jwtTokens(user);
-        response.cookie("accessToken", tokens.accessToken, { httpOnly: true });
+        const tokens = jwtTokens(user as JwtUser);
+        
+        response.cookie("refreshToken", tokens.refreshToken, {
+          httpOnly: true,
+          sameSite: "strict",
+          secure: true,
+        });
 
         return tokens;
       }
     );
+  }
+}
+
+export class DeleteRefreshTokenService {
+  async execute(request: Request, response: Response) {
+    response.clearCookie("refreshToken");
+    return;
   }
 }

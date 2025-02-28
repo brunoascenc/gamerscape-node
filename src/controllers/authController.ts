@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { CreateUserService, GetAllUserService, LoginUserService, RefreshTokenService } from "../services/authService";
+import { CreateUserService, DeleteRefreshTokenService, GetAllUserService, LoginUserService, RefreshTokenService } from "../services/authService";
 import { handleRequest } from "../utils/handleRequest";
-import { CreateUserCommand, LoginUserCommand } from "../data/commands/user/createUserCommand";
+import { CreateUserCommand, LoginUserCommand } from "../data/commands/auth/authCommand";
 
 export class CreateUserController {
   async handle(request: Request, response: Response) {
@@ -34,6 +34,15 @@ export class GetRefreshTokenController {
   async handle(request: Request, response: Response) {
     return handleRequest(request, response, async () => {
       const service = new RefreshTokenService();
+      return await service.execute(request, response);
+    })
+  }
+}
+
+export class DeleteRefreshTokenController {
+  async handle(request: Request, response: Response) {
+    return handleRequest(request, response, async () => {
+      const service = new DeleteRefreshTokenService();
       return await service.execute(request, response);
     })
   }
