@@ -10,14 +10,12 @@ import { jwtTokens } from "../utils/jwtHelpers";
 import { Response, Request } from "express";
 import jwt, { VerifyErrors } from "jsonwebtoken";
 import { JwtUser } from "../data/commands/auth/authDto";
-import axios from "axios";
-import { twitchTokenUrl } from "../utils/api";
 import {
   LoginAuthResponse,
   RefreshAuthResponse,
-  TwitchAuthTokensResponse,
   UserResponse,
 } from "../data/responses/auth";
+import { GetTwitchTokenService } from "./gameService";
 
 export class CreateUserService {
   async execute(command: CreateUserCommand): Promise<UserResponse | Error> {
@@ -49,30 +47,12 @@ export class GetAllUserService {
   }
 }
 
-const getTwitchAcessToken = async (): Promise<TwitchAuthTokensResponse> => {
-  try {
-    const igdbToken = await axios.post(twitchTokenUrl, null, {
-      params: {
-        client_id: process.env.IGDB_CLIENT_ID,
-        client_secret: process.env.IGDB_CLIENT_SECRET,
-        grant_type: "client_credentials",
-      },
-    });
-
-    return igdbToken.data;
-  } catch (error) {
-    throw new ServiceException(
-      "Não foi possível obter o token de acesso do IGDB",
-      401
-    );
-  }
-};
-
 export class LoginUserService {
   async execute(
     command: LoginUserCommand,
     response: Response
   ): Promise<LoginAuthResponse> {
+    const getTwitchTokenService = new GetTwitchTokenService();
     const user = await AuthRepository.findItemByEmail(command.email);
 
     if (!user) {
@@ -88,7 +68,7 @@ export class LoginUserService {
       throw new ServiceException("Senha incorreta", 401);
     }
 
-    const igdbToken = await getTwitchAcessToken();
+    const twitchToken = await getTwitchTokenService.execute();
 
     let tokens = jwtTokens({
       userId: user.id,
@@ -104,9 +84,9 @@ export class LoginUserService {
 
     return {
       ...tokens,
-      igdbAccessToken: igdbToken.access_token,
-      igdbExpiresIn: igdbToken.expires_in,
-      igdbTokenType: igdbToken.token_type,
+      igdbAccessToken: twitchToken.access_token,
+      igdbExpiresIn: twitchToken.expires_in,
+      igdbTokenType: twitchToken.token_type,
     };
   }
 }
@@ -167,16 +147,5 @@ export class DeleteRefreshTokenService {
     }
 
     response.clearCookie("refreshToken");
-  }
-}
-
-export class RefreshTwitchTokenService {
-  async execute(
-    request: Request,
-    response: Response
-  ): Promise<TwitchAuthTokensResponse> {
-    const igdbToken = await getTwitchAcessToken();
-
-    return igdbToken;
   }
 }

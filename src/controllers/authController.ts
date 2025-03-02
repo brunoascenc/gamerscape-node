@@ -5,13 +5,13 @@ import {
   GetAllUserService,
   LoginUserService,
   RefreshTokenService,
-  RefreshTwitchTokenService,
 } from "../services/authService";
 import { handleRequest } from "../utils/handleRequest";
 import {
   CreateUserCommand,
   LoginUserCommand,
 } from "../data/commands/auth/authCommand";
+import { RefreshTwitchTokenService } from "../services/gameService";
 
 export class CreateUserController {
   async handle(request: Request, response: Response) {
