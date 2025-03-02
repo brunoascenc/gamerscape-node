@@ -49,6 +49,25 @@ export class GetAllUserService {
   }
 }
 
+const getTwitchAcessToken = async (): Promise<TwitchAuthTokensResponse> => {
+  try {
+    const igdbToken = await axios.post(twitchTokenUrl, null, {
+      params: {
+        client_id: process.env.IGDB_CLIENT_ID,
+        client_secret: process.env.IGDB_CLIENT_SECRET,
+        grant_type: "client_credentials",
+      },
+    });
+
+    return igdbToken.data;
+  } catch (error) {
+    throw new ServiceException(
+      "Não foi possível obter o token de acesso do IGDB",
+      401
+    );
+  }
+};
+
 export class LoginUserService {
   async execute(
     command: LoginUserCommand,
@@ -69,17 +88,7 @@ export class LoginUserService {
       throw new ServiceException("Senha incorreta", 401);
     }
 
-    const igdbToken: TwitchAuthTokensResponse = await axios.post(
-      twitchTokenUrl,
-      null,
-      {
-        params: {
-          client_id: process.env.IGDB_CLIENT_ID,
-          client_secret: process.env.IGDB_CLIENT_SECRET,
-          grant_type: "client_credentials",
-        },
-      }
-    );
+    const igdbToken = await getTwitchAcessToken();
 
     let tokens = jwtTokens({
       userId: user.id,
@@ -95,9 +104,9 @@ export class LoginUserService {
 
     return {
       ...tokens,
-      igdbAccessToken: igdbToken.data.access_token,
-      igdbExpiresIn: igdbToken.data.expires_in,
-      igdbTokenType: igdbToken.data.token_type,
+      igdbAccessToken: igdbToken.access_token,
+      igdbExpiresIn: igdbToken.expires_in,
+      igdbTokenType: igdbToken.token_type,
     };
   }
 }
@@ -158,5 +167,16 @@ export class DeleteRefreshTokenService {
     }
 
     response.clearCookie("refreshToken");
+  }
+}
+
+export class RefreshTwitchTokenService {
+  async execute(
+    request: Request,
+    response: Response
+  ): Promise<TwitchAuthTokensResponse> {
+    const igdbToken = await getTwitchAcessToken();
+
+    return igdbToken;
   }
 }

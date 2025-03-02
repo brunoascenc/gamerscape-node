@@ -12,11 +12,9 @@ export type RefreshAuthResponse = {
 };
 
 export type TwitchAuthTokensResponse = {
-  data: {
-    access_token: string;
-    expires_in: number;
-    token_type: string;
-  };
+  access_token: string;
+  expires_in: number;
+  token_type: string;
 };
 
 export type UserResponse = {

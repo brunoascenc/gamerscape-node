@@ -3,7 +3,7 @@ import { controllerMethodBinder } from "./middlewares/controllerMethodBinder";
 import { CreateCompletedController, DeleteCompletedController, GetCompletedByIdController, GettAllCompletedController, UpdateCompletedController } from "./controllers/completedController";
 import { CreateWaitListController, DeleteWaitListController, GetAllWaitListController, GetWaitListByIdController } from "./controllers/waitListController";
 import { CreateBackLogController, DeleteBacklogController, GetAllBacklogController, GetBacklogByIdController } from "./controllers/backlogController";
-import { CreateUserController, DeleteRefreshTokenController, GetAllUserController, GetRefreshTokenController, LoginUserController } from "./controllers/authController";
+import { CreateUserController, DeleteRefreshTokenController, GetAllUserController, GetRefreshTokenController, GetRefreshTwitchTokenController, LoginUserController } from "./controllers/authController";
 import { authenticateToken } from "./middlewares/authorization";
 
 const routes = Router();
@@ -26,5 +26,6 @@ routes.get("/user", authenticateToken, controllerMethodBinder(GetAllUserControll
 routes.post("/auth/login", controllerMethodBinder(LoginUserController));
 routes.get("/auth/refresh-token", controllerMethodBinder(GetRefreshTokenController));
 routes.delete("/auth/refresh-token", controllerMethodBinder(DeleteRefreshTokenController));
+routes.get("/auth/refresh-token-twitch", controllerMethodBinder(GetRefreshTwitchTokenController));
 
 export { routes };
