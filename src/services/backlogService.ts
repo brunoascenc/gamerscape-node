@@ -1,24 +1,16 @@
-import AppDataSource from "../database/config/dataSource";
-import { Backlog } from "../database/entities/backlog";
 import { CreateBacklogCommand } from "../data/commands/backlog/backlogCommand";
 import { BacklogRepository } from "../database/repositories/backlogRepository";
+import { BaseItemResponse } from "../data/responses/genericResponse";
 
 export class CreateBackLogService {
-  async execute({
-    title,
-    externalId,
-    userId
-  }: CreateBacklogCommand): Promise<Backlog | Error> {
-    const itemExists = await BacklogRepository.findItemByTitle(title);
+  async execute(command: CreateBacklogCommand): Promise<BaseItemResponse | Error> {
+    const itemExists = await BacklogRepository.findItemByTitle(command.title);
 
     if (itemExists) {
       return new Error("O jogo já existe nessa lista");
     }
 
-    const game = BacklogRepository.repo.create({
-      title,
-      externalId,
-    });
+    const game = await BacklogRepository.createBacklogItem(command);
 
     await BacklogRepository.repo.save(game);
 
@@ -27,7 +19,7 @@ export class CreateBackLogService {
 }
 
 export class GetAllBacklogService {
-  async execute() {
+  async execute(): Promise<BaseItemResponse[]> {
     const items = await BacklogRepository.getAllItems();
 
     return items;
@@ -35,8 +27,8 @@ export class GetAllBacklogService {
 }
 
 export class DeleteBacklogService {
-  async execute(id: string) {
-    const itemExists = BacklogRepository.findItemById(id);
+  async execute(id: string): Promise<void | Error> {
+    const itemExists = await BacklogRepository.findItemById(id);
 
     if (!itemExists) {
       return new Error("O jogo não foi encontrado");
@@ -47,13 +39,13 @@ export class DeleteBacklogService {
 }
 
 export class GetBacklogByIdService {
-  async execute(id: string) {
-    const backlogItem = BacklogRepository.findItemById(id);
+  async execute(id: string): Promise<BaseItemResponse | Error> {
+    const backlogItem = await BacklogRepository.findItemById(id);
 
     if (!backlogItem) {
       return new Error("O jogo não foi encontrado");
     }
-    
-    return backlogItem
+
+    return backlogItem;
   }
 }

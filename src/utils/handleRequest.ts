@@ -10,12 +10,12 @@ const statusCode = {
   GET: 200,
 };
 
-export const handleRequest = async (
+export const handleRequest = async <T>(
   request: Request,
   response: Response,
-  serviceFunction: Function,
+  serviceFunction: (body: any) => Promise<T>,
   successStatusCode?: number
-) => {
+): Promise<Response> => {
   try {
     const result = await serviceFunction(request.body);
     return sendSuccessResponse(
@@ -23,13 +23,16 @@ export const handleRequest = async (
       result,
       successStatusCode || statusCode[request.method]
     );
-    
   } catch (error) {
     if (error instanceof ServiceException) {
       return sendErrorResponse(response, error.message, error.statusCode);
     }
 
-    return sendErrorResponse(response, error.message, 400);
+    return sendErrorResponse(
+      response,
+      (error as any).response?.data?.message || (error as Error).message,
+      400
+    );
   }
 };
 

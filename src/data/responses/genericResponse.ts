@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export type SuccessResponse<T> = {
   success: boolean;
   data: T;
@@ -21,5 +23,13 @@ export enum errorCode {
   gatewayTimeout = 504,
   badGateway = 502,
   notImplemented = 501,
-  payloadTooLarge = 413
+  payloadTooLarge = 413,
+}
+
+export type BaseItemResponse = {
+  id: string;
+  title: string;
+  externalId: string;
+  createdAt: Date;
+  user: User;
 };

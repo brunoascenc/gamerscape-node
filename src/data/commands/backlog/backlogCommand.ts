@@ -1,6 +1,4 @@
 export type CreateBacklogCommand = {
-    title: string;
-    externalId: string;
-    userId: string;
-  };
-  
+  title: string;
+  externalId: string;
+};
