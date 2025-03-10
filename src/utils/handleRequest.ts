@@ -27,7 +27,7 @@ export const handleRequest = async <T>(
     if (error instanceof ServiceException) {
       return sendErrorResponse(response, error.message, error.statusCode);
     }
-
+    console.log(error)
     return sendErrorResponse(
       response,
       (error as any).response?.data?.message || (error as Error).message,

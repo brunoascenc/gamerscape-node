@@ -5,7 +5,7 @@ import { CreateWaitListController, DeleteWaitListController, GetAllWaitListContr
 import { CreateBackLogController, DeleteBacklogController, GetAllBacklogController, GetBacklogByIdController } from "./controllers/backlogController";
 import { CreateUserController, DeleteRefreshTokenController, GetAllUserController, GetRefreshTokenController, GetRefreshTwitchTokenController, LoginUserController } from "./controllers/authController";
 import { authenticateToken } from "./middlewares/authorization";
-import { GetGamesController } from "./controllers/gameController";
+import { GetAnticipatedGamesController, GetComingSoonGamesController, GetPopularGamesController } from "./controllers/gameController";
 
 const routes = Router();
 
@@ -28,6 +28,8 @@ routes.post("/auth/login", controllerMethodBinder(LoginUserController));
 routes.get("/auth/refresh-token", controllerMethodBinder(GetRefreshTokenController));
 routes.delete("/auth/refresh-token", controllerMethodBinder(DeleteRefreshTokenController));
 routes.get("/auth/refresh-token-twitch", controllerMethodBinder(GetRefreshTwitchTokenController));
-routes.get("/games/:accessToken", controllerMethodBinder(GetGamesController));
+routes.get("/games/popular/:accessToken", controllerMethodBinder(GetPopularGamesController));
+routes.get("/games/anticipated/:accessToken", controllerMethodBinder(GetAnticipatedGamesController));
+routes.get("/games/coming-soon/:accessToken", controllerMethodBinder(GetComingSoonGamesController));
 
 export { routes };
